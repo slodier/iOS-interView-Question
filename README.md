@@ -76,7 +76,45 @@
 	
 	自定义对象需要实现 NSCoding 协议,然后可以调用 NSKeyedArchiver +(BOOL)archiveRootObject:(id)rootObject toFile:(NSString *)path 
 	方法将它序列化到磁盘
-<br><br>
+
+<p id="25" style="color: blue"><b>2-5. Apple Pay 是什么？它的大概工作流程是怎样的?</b></p>
+
+	购买流程:
+		1.程序向服务器发送请求,获得一份产品列表.
+		2.服务器返回包含产品标识符的列表.
+		3.程序向 App Store 发送请求,得到产品的信息.
+		4.App Store 返回产品信息.
+		5.程序把返回的产品信息显示给用户(App 的 store 界面)
+		6.用户选择某个产品.
+		7.程序向 App Store 发送支付请求.
+		8.App Store 处理支付请求并返回交易完成信息.
+		9.程序从信息中获得数据，并发送至服务器.
+		10.服务器纪录数据，并进行审(我们的)查.
+		11.服务器将数据发给 App Store 来验证该交易的有效性.
+		12.App Store 对收到的数据进行解析,返回该数据和说明其是否有效的标识.
+		13.服务器读取返回的数据，确定用户购买的内容.
+		14.服务器将购买的内容传递给程序.
+
+	注意事项:
+		1.掉单的相关处理,因为网速-延迟等原因,造成用户花了钱,没有得到商品
+  			1).将交易凭证存在本地,在 rootViewController 监听 SKPaymentTransactionObserver  
+  			[[SKPaymentQueue defaultQueue]addTransactionObserver:self];
+
+  			2).判断
+  			if (transaction.transactionState == SKPaymentTransactionStatePurchased) {
+       	 		NSLog(@"-----completeTransaction--------");
+        		// Your application should implement these two methods.
+        		NSString *product = transaction.payment.productIdentifier;
+       			NSString * receipt = nil;
+       			NSURLRequest*appstoreRequest = [NSURLRequest requestWithURL:[[NSBundle mainBundle]appStoreReceiptURL]];
+       			NSError *error = nil;
+       			NSData * receiptData = [NSURLConnection sendSynchronousRequest:appstoreRequest returningResponse:nil error:&error];
+       			receipt = [receiptData base64EncodedStringWithOptions:NSDataBase64EncodingEndLineWithLineFeed];
+       		    // your code,(我是将交易凭证和订单号一起发给服务器)
+       		}
+       		别忘了移除监听 [[SKPaymentQueue defaultQueue]removeTransactionObserver:self];
+
+
 <p id="26" style="color: blue"><b>2-6 iOS 的沙盒目录结构是怎样的? App Bundle 里面都有什么？</b><br></p>
 	
 	(1) Bundle Path [APP 包]
@@ -228,22 +266,30 @@
 
 ###经验类问题
 <hr>
+<p id="31" style="color: blue"><b>3-1 为什么 UIScrollView 的滚动会导致 NSTimer 失效?</b>
+</p>
+
+	因为UIScrollView滚动的时候跟主线程不是同一个runloop mode，一个runloop mode就是input sources、timer和observers的集合。
+	每次执行runloop，都需要指定一个mode。UIScrollView滚动时候由于不同的mode所以也导致它只能保证它所在的runloop的timer有效，
+	而主线程无效。
+	解决方法:[NSRunLoop currentRunLoop]addTimer:_openTimer forMode:UITrackingRunLoopMode];
+
 <p id="33" style="color: blue"><b>3-3 你会如何存储用户的一些敏感信息,如登录的 token。</b>
 </p>
 <a href="https://github.com/slodier/CCKeychain" target="_blank" style="color: #B2AB23">放个链接</a>
 
 <p id="39" style="color: blue"><b>3-9 performSelector: withObject: afterDelay: 内部大概是怎么实现的，有什么注意事项么?</b></p>
 
-	创建一个定时器,时间结束后系统会使用 `Runtime` 通过方法名称(Selector 本质就是方法名称)去方法列表中找到对应的方法调用并实现
+	创建一个定时器,时间结束后系统会使用 Runtime 通过方法名称(Selector 本质就是方法名称)去方法列表中找到对应的方法调用并实现
 注意事项:
 	
-	1.调用 `performSelector:withObject:afterDelay:`方法时,先判断希望调用的方法是否存在 `respondsToSelector:`
+	1.调用 performSelector:withObject:afterDelay: 方法时,先判断希望调用的方法是否存在 respondsToSelector:
 	
 	2.这个方法是异步方法,必须在主线程调用,在子线程调用永远不会调用该方法
 
 
 <p id="310" style="color: blue"><b>3-10 如何播放 GIF 图片，有什么优化方案么？</b>
 </p>
-<a href="http://www.cnblogs.com/asamu/p/6046729.html" target="_blank" style="color: #B2AB23">解决方法</a>
+<a href="http://www.cnblogs.com/asamu/p/6046729.html" target="_blank" style="color: #B2AB23">优化方案</a>
 
 ##未完待续...
