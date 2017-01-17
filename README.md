@@ -60,6 +60,19 @@
 #Answer
 ###吾三跪
 <hr>
+
+<p id="5" style="color: blue"><b>1-5. 最常用的版本控制工具是什么,能大概讲讲原理么?</b></p>
+	
+	版本控制工具: Git
+	从根本上来讲 Git 是一套内容寻址 (content-addressable) 文件系统，在此之上提供了一个 VCS 用户界面
+详细见 <a href="https://git-scm.com/book/zh/v1/Git-%E5%86%85%E9%83%A8%E5%8E%9F%E7%90%86" style="color: #B2AB23">Git 原理</a>	
+
+<p id="7" style="color: blue"><b>1-7. 你一般是怎么用 Instruments 的?</b></p>
+	
+	Time Profiler 查看代码&耗时详情
+	Leaks 检测内存泄漏,不得不吐槽 QQ-SDK, 之前的项目上架前,查出 37 个 New Leaks, 定位发现, QQ-SDK 版本更新了, 并且没有通知我...
+关于 Leaks 的使用<a href="http://www.jianshu.com/p/c0aa12d91f05">见这篇文章</a>
+
 <p id = "10" style="color: blue"><b>1-10 如何实现单例,单例会有什么弊端?</b></p>
 
 	·单例相当于全局变量,因此存在强耦合,不利于扩展和应对变化
@@ -291,5 +304,17 @@
 <p id="310" style="color: blue"><b>3-10 如何播放 GIF 图片，有什么优化方案么？</b>
 </p>
 <a href="http://www.cnblogs.com/asamu/p/6046729.html" target="_blank" style="color: #B2AB23">优化方案</a>
+
+<p id="311" style="color: blue"><b>3-11. 使用 NSUserDefaults 时,如何处理布尔的默认值?(比如返回 NO,不知道是真的 NO 还是没有设置过),及简介</b></p>
+
+	在 NSUserDefaults 中设置 BOOL 类型的值总会有一个非常麻烦的问题. 如果我们要在 NSUserDefaults 中存储一个 BOOL 类型的值, 
+	当我们使用 boolForKey: 取出它的值时, 它的默认值总是 (nil)NO.
+	因为在你没有为一个 key 单独设置值时, 它的默认值总是 nil. 所以在我们使用 NSUserDefaults 设置一个 BOOL 值时, 总会把这个 
+	BOOL 值的 语义设置为相反的.
+	但是当我们需要把 BOOL 值的默认值设置为 YES 时, 其实也是有办法的.
+
+	if ([[NSUserDefaults standUserDefaults] objectForKey:xxx] == nil) {  
+   	 [[NSUserDefaults standUserDefaults] setBool:YES forKey:xxx];
+	}
 
 ##未完待续...
