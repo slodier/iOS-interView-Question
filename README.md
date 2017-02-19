@@ -81,13 +81,29 @@
 	·单例相当于全局变量,因此存在强耦合,不利于扩展和应对变化
 	·单例违背单一设计原则
 
+<p id="11" style="color: blue"><b>1-11. iOS 是如何管理内存的?</b></p>
+
+	1.自己生成的对象,自己持有
+	2.非自己生成的对象,自己也能持有
+	3.不在需要自己持有对象的时候,释放
+	4.非自己持有的对象无需释放
+
+	简单而言,在编译时期在合适的位置插入 release, 在运行时作一些优化
+
+
 ###知识性问题
 <hr>
 <p id="21" style="color: blue"><b>2-1 什么是响应链,它是怎么工作的?</b></p>
 	
 	事件的传递顺序是这样的:
 	产生触摸事件 -> UIApplication 事件队列 -> [UIApplication hitTest: withEvent:] -> 返回更合适的 view -> [子控件 hitTest: withEvent:] -> 返回更合适的 view
-<p id="23"></p>
+
+<p id="23" style="color: blue"><b>2-3. iOS Extension 是什么? 能列举几个常用他的 Extension?</b></p>
+
+	Extension 是 Category 的一个特例,没有分类名字,可以扩展属性,成员变量和方法
+	常用的扩展是在 .m 文件中声明私有属性和方法
+	
+
 <p id="24" style="color: blue"><b>2-4 如何把一个包含自定义对象的数组序列化到磁盘？</b></p>
 	
 	自定义对象需要实现 NSCoding 协议,然后可以调用 NSKeyedArchiver +(BOOL)archiveRootObject:(id)rootObject toFile:(NSString *)path 
@@ -289,6 +305,12 @@
 	
 	5.两者最明显的区别是 View 可以接受并处理事件,而 Layer 不可以
 
+<p id="219" style="color: blue"><b>2-19. +[UIView animateWithDuration: animations: completion:] 内部大概是如何实现的?</b></p>
+	
+	1.animateWithDuration: 这就等于创建一个定时器
+	2.animations: 这是创建定时器需要实现的 SEL
+	3.completion: 是定时器结束以后的一个回调 block
+
 <p id="220" style="color: blue"><b>2-20. @property (copy)NSMutableArray *array; 这个写法会出什么问题?
 </b></p>
 
@@ -322,6 +344,29 @@
 <p id="33" style="color: blue"><b>3-3 你会如何存储用户的一些敏感信息,如登录的 token.</b>
 </p>
 <a href="https://github.com/slodier/CCKeychain" target="_blank" style="color: #B2AB23">放个链接</a>
+
+<p id="37" style="color: blue"><b>3-7. NSNotification 和 KVO 的使用场景?</b></p>
+
+	NSNotification:
+	1.控制器与一个或多个任意的对象进行通信(监控)
+	2.UIDevice 通知
+	3.键盘通知
+
+	KVO:
+	对指定对象的某个属性进行观察,当属性发生变化时,进行通知
+
+<p id="38" style="color: blue"><b>3-8. 使用 Block 时需要注意哪些问题?优点?具体实现?</b></p>
+
+	循环引用的问题
+
+	优点:
+	1.使代码更加简单, block 本身可以封装一段代码,减少函数声明的数量
+	2.速度快,使用 Block 在执行速度上要比使用快速枚举快
+	3.回调,而且回调的时候可以传入参数
+	4.无论在哪儿调用, block 的执行都会回到 block 创建的地方执行而非调用的地方
+
+	具体实现:
+	Just Coding
 
 <p id="39" style="color: blue"><b>3-9 performSelector: withObject: afterDelay: 内部大概是怎么实现的,有什么注意事项么?</b></p>
 
