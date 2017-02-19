@@ -311,8 +311,7 @@
 	2.animations: 这是创建定时器需要实现的 SEL
 	3.completion: 是定时器结束以后的一个回调 block
 
-<p id="220" style="color: blue"><b>2-20. @property (copy)NSMutableArray *array; 这个写法会出什么问题?
-</b></p>
+<p id="220" style="color: blue"><b>2-20. @property (copy)NSMutableArray *array; 这个写法会出什么问题?</b></p>
 
 	1.添加/删除/修改数组内的元素的时候,程序会因为找不到对应的方法而奔溃,因为 copy 就是复制不可变的 NSArray 对象
 	2.使用了 atomic 属性会严重影响性能.
